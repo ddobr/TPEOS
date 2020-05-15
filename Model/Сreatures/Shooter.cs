@@ -78,7 +78,7 @@ namespace TPEOS.Model
 
         public Point[] GetShootPositions(Point target, int distance)
         {
-            var result = new List<Point> {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)};
+            var result = Point.Empty.IncidentPoints();
             result = result.Where(p =>
                 Game.Field.IsInBounds(p.Sum(target)) && !Game.Field.DoesContainsCreature(p.Sum(target))).ToList();
             for (var i = 0; i < distance - 1; i++)

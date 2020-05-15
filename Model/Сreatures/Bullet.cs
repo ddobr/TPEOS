@@ -51,7 +51,7 @@ namespace TPEOS.Model
             this.Direction = direction;
             Health = ModelConstants.BulletHealth;
             WalkTimeRemains = ModelConstants.BulletSpeed;
-            Location = shooterLocation;
+            Location = shooterLocation.Sum(direction);
             HitPower = ModelConstants.BulletHitPower;
         }
     }

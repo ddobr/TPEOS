@@ -86,6 +86,12 @@ namespace TPEOS.Model
 
         public static void ProcessSpawn(Creature spawnedCreature)
         {
+            if (spawnedCreature is Bullet && Field.DoesContainsCreature(spawnedCreature.Location))
+            {
+                Field.CreaturesMap[spawnedCreature.Location.X, spawnedCreature.Location.Y].DecreaseHealth(spawnedCreature.HitPower);
+                spawnedCreature.DecreaseHealth(spawnedCreature.Health);
+                return;
+            }
             Field.AddCreature(spawnedCreature);
             View.TpeosWindow.Timer.Tick += spawnedCreature.Tick;
         }

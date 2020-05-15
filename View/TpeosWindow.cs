@@ -14,7 +14,7 @@ namespace TPEOS.View
     {
         private readonly GameState gameState;
         public int TickCount;
-        public static Timer Timer;
+        public static Timer Timer = new Timer { Interval = 10 };
 
         public TpeosWindow()
         {
@@ -24,7 +24,6 @@ namespace TPEOS.View
                 32 * Field.Size + 64);
             
             Game.StartGame();
-            Timer = new Timer {Interval = 10};
             Timer.Tick += TimerTick;
             Timer.Tick += Game.Field.Player.Tick;
             Timer.Tick += gameState.GameTick;
@@ -98,7 +97,6 @@ namespace TPEOS.View
 
 
             e.Graphics.ResetTransform();
-            if (Game.Field.CreaturesList.Count != 0)
             e.Graphics.DrawString(Game.Field.Player.Health + "  " + Game.Field.Player.BlocksAmount,
                 new Font("Arial", 16), Brushes.Green, 0, 0);
         }

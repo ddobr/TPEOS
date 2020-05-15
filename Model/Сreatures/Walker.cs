@@ -24,17 +24,24 @@ namespace TPEOS.Model
             if (WalkerDijkstraAlgorithm.TryGetPathsDelta(Location, Game.Field.Player.Location, out var delta))
             {
                 var nextPoint = delta.Sum(Location);
-                if (Game.Field.Player.Location == nextPoint || Game.Field.DoesContainsCreature(nextPoint))
+                if (Game.Field.Player.Location == nextPoint || Game.Field.CreaturesMap[nextPoint.X, nextPoint.Y] is Block)
                     return new CreatureCommand(Point.Empty, Attack(delta));
-                Location = nextPoint;
-                return new CreatureCommand(delta);
+                if (Game.Field.CreaturesMap[nextPoint.X, nextPoint.Y] == null)
+                {
+                    Location = nextPoint;
+                    return new CreatureCommand(delta);
+                }
             }
             delta = FindDeltaSimply(Game.Field.Player.Location);
             var nextLocation = delta.Sum(Location);
-            if (Game.Field.Player.Location == nextLocation || Game.Field.DoesContainsCreature(nextLocation))
+            if (Game.Field.Player.Location == nextLocation || Game.Field.CreaturesMap[nextLocation.X, nextLocation.Y] is Block)
                 return new CreatureCommand(Point.Empty, Attack(delta));
-            Location = nextLocation;
-            return new CreatureCommand(delta);
+            if (Game.Field.CreaturesMap[nextLocation.X, nextLocation.Y] == null)
+            {
+                Location = nextLocation;
+                return new CreatureCommand(delta);
+            }
+            return new CreatureCommand(Point.Empty);
         }
 
         public override Hit Attack(Point delta)
@@ -87,7 +94,8 @@ namespace TPEOS.Model
                         toOpen = e;
                     }
 
-                if (toOpen == nullPoint) return false;
+                if (toOpen == nullPoint) 
+                    return false;
                 if (toOpen == end) break;
 
                 foreach (var e in toOpen.IncidentPoints()

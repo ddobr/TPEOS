@@ -30,7 +30,7 @@ namespace TPEOS.Model
         public const int ShooterInitialHealth = 1;
         public const int ShooterWalkSpeed = 90;
         public const int ShooterShootSpeed = 400;
-        public const int ShooterSpawnerCooldown = 20000;
+        public const int ShooterSpawnerCooldown = 200;
         public const int ShooterHitPower = 0;
     }
 }

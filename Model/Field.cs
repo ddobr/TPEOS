@@ -69,7 +69,7 @@ namespace TPEOS.Model
 
         public bool DoesContainsCreature(Point point)
         {
-            return CreaturesMap[point.X, point.Y] != null || Game.Field.Player.Location == point;
+            return CreaturesMap[point.X, point.Y] != null;
         }
 
         public Point FindCorrectDropPoint(Point point)
