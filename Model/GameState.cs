@@ -46,7 +46,7 @@ namespace TPEOS.Model
         {
             if (WalkerSpawnTimeRemains == 0)
             {
-                //Game.SpawnWalker();
+                Game.SpawnWalker();
                 WalkerSpawnTimeRemains += ModelConstants.WalkerSpawnerCooldown;
             }
 

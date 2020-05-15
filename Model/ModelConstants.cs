@@ -9,7 +9,7 @@ namespace TPEOS.Model
 {
     class ModelConstants
     {
-        public const int PlayerHealth = 10000000;
+        public const int PlayerHealth = 10;
         public const int PlayerWalkSpeed = 2; //Возможно игрок будет без этого ограничения 
         public const int PlayerShootSpeed = 40;
         public const int InitialPlayerAmmo = 10;

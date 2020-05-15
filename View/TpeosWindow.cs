@@ -15,7 +15,6 @@ namespace TPEOS.View
         private readonly GameState gameState;
         public int TickCount;
         public static Timer Timer;
-        public static Point debug;
 
         public TpeosWindow()
         {
@@ -89,8 +88,6 @@ namespace TPEOS.View
                 
             }
 
-            e.Graphics.DrawImage(Textures.Player,
-                new Point(debug.X * 32, debug.Y * 32));
             //TODO вращение сущностей вправо-влево
             //e.Graphics.TranslateTransform(Game.Field.Player.Location.X * 32 + 16, Game.Field.Player.Location.Y * 32 + 16);
             //e.Graphics.RotateTransform(TickCount * 10);
@@ -102,7 +99,7 @@ namespace TPEOS.View
 
             e.Graphics.ResetTransform();
             if (Game.Field.CreaturesList.Count != 0)
-            e.Graphics.DrawString(Game.Field.Player.Health.ToString() + Game.Field.Player.BlocksAmount + Game.Field.Player.Location.Diff(Game.Field.CreaturesList[0].Location),
+            e.Graphics.DrawString(Game.Field.Player.Health + "  " + Game.Field.Player.BlocksAmount,
                 new Font("Arial", 16), Brushes.Green, 0, 0);
         }
 

@@ -40,7 +40,6 @@ namespace TPEOS.Model
                 var minLength = Game.Field.CreaturesMap.Length;
                 foreach (var position in GetShootPositions(Game.Field.Player.Location, 8))
                 {
-                    View.TpeosWindow.debug = position;
                     if (!ShooterDijkstraAlgorithm.TryGetPathsDelta(Location, position, out var deltaPoint, out var length)) continue;
                     if (length < minLength)
                     {
