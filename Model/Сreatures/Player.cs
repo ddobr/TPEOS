@@ -30,7 +30,10 @@ namespace TPEOS.Model
 
         public override Hit Attack(Point delta)
         {
-            return new Hit(this, delta, HitPower);
+            var hitLocation = delta.Sum(Location);
+            return Game.Field.CreaturesMap[hitLocation.X, hitLocation.Y] is Block
+                ? new Hit(this, delta, Game.Field.CreaturesMap[hitLocation.X, hitLocation.Y].Health)
+                : new Hit(this, delta, HitPower);
         }
 
         public void IncreaseHealth(int health)
@@ -74,7 +77,10 @@ namespace TPEOS.Model
         {
             if (DoesHoldWeapon)
             {
-                if (Ammo == 0 || ShootTimeRemains != 0) return new CreatureCommand(Point.Empty, Attack(delta));
+                var attackedPoint = delta.Sum(Location);
+                if (Ammo == 0 || ShootTimeRemains != 0 ||
+                    Game.Field.CreaturesMap[attackedPoint.X, attackedPoint.Y] != null)
+                    return new CreatureCommand(Point.Empty, Attack(delta));
                 var bullet = new Bullet(Location, delta);
                 Ammo--;
                 ShootTimeRemains += ModelConstants.PlayerShootSpeed;

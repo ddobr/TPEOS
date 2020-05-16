@@ -19,7 +19,9 @@ namespace TPEOS.Model
 
         public override CreatureCommand Act()
         {
-            if (WalkTimeRemains == 0 && TryDodge(out var nextLocation))
+            if (WalkTimeRemains == 0 && TryDodge(out var nextLocation)
+                                     && !Game.Field.DoesContainsCreature(nextLocation) &&
+                                     Game.Field.IsInBounds(nextLocation))
             {
                 var delta = nextLocation.Diff(Location);
                 Location = nextLocation;
@@ -27,7 +29,8 @@ namespace TPEOS.Model
                 return new CreatureCommand(delta);
             }
 
-            if (ShootTimeRemains == 0 && IsTargetOnAxis(Game.Field.Player.Location))
+            if (ShootTimeRemains == 0 && IsTargetOnAxis(Game.Field.Player.Location) &&
+                GetTaxicabGeometry(Location, Game.Field.Player.Location) >= 4)
             {
                 var shootDelta = GetUnitVector(Game.Field.Player.Location.Diff(Location));
                 ShootTimeRemains += ModelConstants.ShooterShootSpeed;
@@ -38,7 +41,8 @@ namespace TPEOS.Model
             {
                 var delta = Point.Empty;
                 var minLength = Game.Field.CreaturesMap.Length;
-                foreach (var position in GetShootPositions(Game.Field.Player.Location, 8))
+                foreach (var position in GetShootPositions(Game.Field.Player.Location, 8)
+                    .Where(p => GetTaxicabGeometry(p, Game.Field.Player.Location) >= 7))
                 {
                     if (!ShooterDijkstraAlgorithm.TryGetPathsDelta(Location, position, out var deltaPoint, out var length)) continue;
                     if (length < minLength)
@@ -47,12 +51,9 @@ namespace TPEOS.Model
                         delta = deltaPoint;
                     }
                 }
-                if (delta != Point.Empty)
-                {
-                    WalkTimeRemains += ModelConstants.ShooterWalkSpeed;
-                    Location = Location.Sum(delta);
-                    return new CreatureCommand(delta);
-                }
+                WalkTimeRemains += ModelConstants.ShooterWalkSpeed;
+                Location = Location.Sum(delta);
+                return new CreatureCommand(delta);
             }
 
             return new CreatureCommand(Point.Empty);
@@ -84,7 +85,9 @@ namespace TPEOS.Model
             for (var i = 0; i < distance - 1; i++)
                 result = result.Select(p =>
                         Game.Field.IsInBounds(p.Sum(GetUnitVector(p)).Sum(target)) &&
-                        !Game.Field.DoesContainsCreature(p.Sum(GetUnitVector(p)).Sum(target))
+                        (!Game.Field.DoesContainsCreature(p.Sum(GetUnitVector(p)).Sum(target)) 
+                         || Game.Field.GetCreature(p.Sum(GetUnitVector(p)).Sum(target)) is Bullet)
+
                             ? p.Sum(GetUnitVector(p))
                             : p)
                     .ToList();
@@ -154,6 +157,11 @@ namespace TPEOS.Model
             delta.Y = delta.Y == 0 ? 0 : delta.Y / Math.Abs(delta.Y);
             return delta;
         }
+
+        public int GetTaxicabGeometry(Point from, Point to)
+        {
+            return Math.Abs(from.X - to.X) + Math.Abs(from.Y - to.Y);
+        }
     }
 
     public static class ShooterDijkstraAlgorithm
@@ -163,7 +171,8 @@ namespace TPEOS.Model
         {
             delta = Point.Empty;
             length = 0;
-            if (start == end) return false;
+            if (start == end) 
+                return true;
             var notVisited = new HashSet<Point>();
             var visited = new HashSet<Point>();
             notVisited.Add(start);
@@ -184,7 +193,8 @@ namespace TPEOS.Model
                 if (toOpen == end) break;
 
                 foreach (var e in toOpen.IncidentPoints()
-                    .Where(x => Game.Field.IsInBounds(x) && !Game.Field.DoesContainsCreature(x)))
+                    .Where(x => Game.Field.IsInBounds(x) && !Game.Field.DoesContainsCreature(x) &&
+                                Game.Field.Player.Location != x))
                 {
                     var currentPrice = track[toOpen].Price + 1;
                     var nextPoint = e;

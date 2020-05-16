@@ -40,7 +40,8 @@ namespace TPEOS.Model
 
         public void AddDrop(Drop drop, Point location)
         {
-            DropsMap[location.X, location.Y] = drop;
+            if (drop != Drop.None)
+                DropsMap[location.X, location.Y] = drop;
         }
 
         public void RemoveCreature(Creature creature)
@@ -72,6 +73,11 @@ namespace TPEOS.Model
             return CreaturesMap[point.X, point.Y] != null;
         }
 
+        public Creature GetCreature(Point point)
+        {
+            return CreaturesMap[point.X, point.Y];
+        }
+
         public Point FindCorrectDropPoint(Point point)
         {
             var result = point;
@@ -85,7 +91,5 @@ namespace TPEOS.Model
                 result.Y--;
             return result;
         }
-
-
     }
 }

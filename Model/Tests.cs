@@ -37,7 +37,7 @@ namespace TPEOS.Model
                 command = bullet.Act();
                 Game.ProcessMove(bullet, command);
             }
-            Assert.That(Game.Field.CreaturesMap[2, 2] is Bullet);
+            Assert.That(Game.Field.CreaturesMap[2, 3] is Bullet);
         }
 
         [Test]
@@ -49,13 +49,6 @@ namespace TPEOS.Model
             var command = Game.Field.Player.Act(Control.ActionUp);
             var bullet = command.Spawn;
             Game.ProcessPlayersMove(Game.Field.Player, command);
-
-            for (var i = 0; i <= ModelConstants.BulletSpeed; i++)
-                bullet.Tick(command, EventArgs.Empty);
-            
-            command = bullet.Act();
-            Game.ProcessMove(bullet, command);
-            Assert.That(Game.Field.CreaturesMap[2, 2] is Bullet);
 
             for (var i = 0; i <= ModelConstants.BulletSpeed; i++)
                 bullet.Tick(command, EventArgs.Empty);
@@ -128,28 +121,17 @@ namespace TPEOS.Model
             var shooter = new Shooter(new Point(2, 3));
             shooter.Tick(null, EventArgs.Empty);
             shooter.Act();
-            Assert.That(shooter.Location == new Point(2, 3));
-        }
-
-        [Test]
-        public void ShooterDoesntDodgeWrongBulletDirection()
-        {
-            Game.Field = new Field(6) { CreaturesMap = new Creature[6, 6] };
-            Game.ProcessSpawn(new Bullet(new Point(2, 0), new Point(1, 0)));
-            var shooter = new Shooter(new Point(2, 3));
-            shooter.Tick(null, EventArgs.Empty);
-            shooter.Act();
-            Assert.That(shooter.Location == new Point(2, 3));
+            Assert.That(shooter.Location == new Point(2, 3) || shooter.Location == new Point(2, 4));
         }
 
         [Test]
         public void ShooterShootsAtPlayer()
         {
-            Game.Field = new Field(5) { CreaturesMap = new Creature[5, 5] };
-            var shooter = new Shooter(new Point(2, 3));
+            Game.Field = new Field(10) { CreaturesMap = new Creature[10, 10] };
+            var shooter = new Shooter(new Point(5, 9));
             Game.ProcessSpawn(shooter);
             var command = shooter.Act();
-            Assert.That(command.Spawn.Location == new Point(2, 3) && ((Bullet)command.Spawn).Direction == new Point(0, -1));
+            Assert.That(command.Spawn.Location == new Point(5, 8) && ((Bullet)command.Spawn).Direction == new Point(0, -1));
         }
 
         [Test]

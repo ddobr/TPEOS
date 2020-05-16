@@ -37,6 +37,8 @@ namespace TPEOS.View
             base.OnLoad(e);
 
             FormBorderStyle = FormBorderStyle.FixedDialog;
+            //FormBorderStyle = FormBorderStyle.None;
+            //WindowState = FormWindowState.Maximized;
             Text = @"Two Punches Equals One Shot";
             DoubleBuffered = true;
             MaximizeBox = false;
@@ -81,7 +83,7 @@ namespace TPEOS.View
                         new Point(creature.Location.X * 32, creature.Location.Y * 32));
                 else if (creature is Shooter)
                 {
-                    e.Graphics.DrawImage(Textures.CreaturesTextures[CreatureType.Block],
+                    e.Graphics.DrawImage(Textures.CreaturesTextures[CreatureType.Shooter],
                         new Point(creature.Location.X * 32, creature.Location.Y * 32));
                 }
                 
@@ -97,7 +99,8 @@ namespace TPEOS.View
 
 
             e.Graphics.ResetTransform();
-            e.Graphics.DrawString(Game.Field.Player.Health + "  " + Game.Field.Player.BlocksAmount,
+            e.Graphics.DrawString(
+                Game.Field.Player.Health + "  " + Game.Field.Player.BlocksAmount + "  " + Game.Field.Player.Ammo,
                 new Font("Arial", 16), Brushes.Green, 0, 0);
         }
 

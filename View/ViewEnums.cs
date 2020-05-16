@@ -16,6 +16,7 @@ namespace TPEOS.View
     {
         Walker,
         Block,
-        Bullet
+        Bullet,
+        Shooter
     }
 }
